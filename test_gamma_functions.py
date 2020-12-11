@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
-from gamma_functions import flory_huggins
+from gamma_functions import flory_huggins, set_symmetrical_matrix, nrtl
 
 
 class GammaFunctionTests(unittest.TestCase):
@@ -22,8 +22,29 @@ class GammaFunctionTests(unittest.TestCase):
         # ternary power = 2/3
         assert_array_almost_equal(flory_huggins(ternary_r, ternary_x, 2./3.), np.array([-0.066243, -0.006603, -0.002855]))
 
-
-
+    def test_nrtl(self):
+        # binary
+        tau = np.zeros((2, 2))
+        alpha = np.zeros((2, 2))
+        tau[0, 1] = 2.
+        tau[1, 0] = 4.
+        set_symmetrical_matrix(alpha, 0, 1, 0.3)
+        x = np.array([.1, .9])
+        assert_array_almost_equal(nrtl(x, tau, alpha), np.array([3.10967304,  0.09410169]))
+        # ternary
+        tau3 = np.zeros((3, 3))
+        alpha3 = np.zeros((3, 3))
+        tau3[0, 1] = 2.
+        tau3[1, 0] = 4.
+        tau3[0, 2] = -2.
+        tau3[2, 0] = 3.
+        tau3[1, 2] = 5.
+        tau3[2, 1] = -3.
+        set_symmetrical_matrix(alpha3, 0, 1, 0.3)
+        set_symmetrical_matrix(alpha3, 0, 2, 0.3)
+        set_symmetrical_matrix(alpha3, 1, 2, 0.3)
+        x3 = np.array([.1, .2, .7])
+        assert_array_almost_equal(nrtl(x3, tau3, alpha3), np.array([-0.38167668, -1.32633701, -0.09814396]))
 
 
 if __name__ == "__main__":
