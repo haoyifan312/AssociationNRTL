@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 from numpy.testing import assert_array_equal, assert_array_almost_equal
 
-from gamma_functions import flory_huggins, set_symmetrical_matrix, nrtl
+from gamma_functions import flory_huggins, set_symmetrical_matrix, nrtl, association_gamma
 
 
 class GammaFunctionTests(unittest.TestCase):
@@ -45,6 +45,22 @@ class GammaFunctionTests(unittest.TestCase):
         set_symmetrical_matrix(alpha3, 1, 2, 0.3)
         x3 = np.array([.1, .2, .7])
         assert_array_almost_equal(nrtl(x3, tau3, alpha3), np.array([-0.38167668, -1.32633701, -0.09814396]))
+
+    def test_association_gamma(self):
+        # methanol n-hexane
+        xi = np.array([0.1, 0.9])
+        ri = np.array([1.43, 4.75])
+        nui = [[1, -2],
+               []]
+        delta_ad = np.zeros((1, 1))
+        delta_ad[0][0] = 29.15458358
+        info_dict = {}
+        lnGammaA = association_gamma(xi, ri, nui, delta_ad, info_dict=info_dict)
+        assert_array_almost_equal(lnGammaA, np.array([2.2029566,  0.05352245]))
+        xA_calculated = info_dict['xA']
+        xA_save = [0.7510924235549102, 0.5021848466186324]
+        for calc, save in zip(xA_calculated, xA_save):
+            self.assertAlmostEqual(calc, save)
 
 
 if __name__ == "__main__":

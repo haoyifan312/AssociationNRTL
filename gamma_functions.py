@@ -81,8 +81,13 @@ def association_unbonded_site_fraction_residuals(xs: np.array, rho_a, rho_d, cap
     return ret
 
 
-def association_gamma(x_i: np.array, r_i: np.array, nu_i: list, cap_delta_ad: np.ndarray, info_dict: dict = None, verbose=0,
-                      opt_method='dogbox'):
+def association_gamma(x_i: np.array,
+                      r_i: np.array,
+                      nu_i: list,
+                      cap_delta_ad: np.ndarray,
+                      info_dict: dict = None,
+                      verbose: int = 0,
+                      opt_method: str = 'dogbox'):
     """
     calculate activity coefficient from association theory, reference Hao and Chen, AIChE J. 2020
     :param opt_method: scipy least square method name, default 'dogbox', refer to scipy.optimize.least_square
@@ -183,15 +188,3 @@ def association_gamma(x_i: np.array, r_i: np.array, nu_i: list, cap_delta_ad: np
         info_dict['xA'] = list(xA)
 
     return lnGammaA
-
-
-# methanol n-hexane
-xi = np.array([0.1, 0.9])
-ri = np.array([1.43, 4.75])
-nui = [[1, -2],
-       []]
-delta_ad = np.zeros((1, 1))
-delta_ad[0][0] = 29.15458358
-info_dict = {}
-print(association_gamma(xi, ri, nui, delta_ad, verbose=2, info_dict=info_dict))
-print(info_dict)
