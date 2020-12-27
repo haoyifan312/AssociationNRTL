@@ -126,8 +126,8 @@ class AssociationNRTL:
                                    verbose=self.solver_verbose,
                                    opt_method=self.solver_method)
         if info is not None:
-            info['gammaC'] = list(gammaC)
-            info['gammaR'] = list(gammaR)
-            info['gammaA'] = list(gammaA)
+            info['lnGammaC'] = list(gammaC)
+            info['lnGammaR'] = list(gammaR)
+            info['lnGammaA'] = list(gammaA)
 
         return gammaC + gammaR + gammaA

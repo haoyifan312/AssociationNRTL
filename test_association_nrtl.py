@@ -22,9 +22,9 @@ class AssociationNRTLTests(unittest.TestCase):
         xs = np.array([0.1, 0.9])
         gamma = MethanolHexane.compute(xs, 290.0, info)
         assert_array_almost_equal(gamma, np.array([2.15093317, 0.05506928]))
-        info_expected = {'gammaA': [2.2941267426117498, 0.05074053854893874],
-                         'gammaC': [-0.26668843103865236, -0.0018881073985488744],
-                         'gammaR': [0.1234948602480419, 0.006216847427475997],
+        info_expected = {'lnGammaA': [2.2941267426117498, 0.05074053854893874],
+                         'lnGammaC': [-0.26668843103865236, -0.0018881073985488744],
+                         'lnGammaR': [0.1234948602480419, 0.006216847427475997],
                          'xA': [0.7650107902819817, 0.5300215805551459]}
         self.assertTrue(info.keys() == info_expected.keys())
         for key, values in info.items():
@@ -48,9 +48,9 @@ class AssociationNRTLTests(unittest.TestCase):
         gamma = WaterEGBE.compute(xs, 320.0, info)
         assert_array_almost_equal(gamma, np.array([0.24498518, 0.37599375]))
         info_expected = {'xA': [0.2984689816415618, 0.2984689816416465, 0.6206891985361339, 0.13622980149879493, 0.13622980149879535],
-                         'gammaC': [-0.07366516449835842, -0.4930109821121367],
-                         'gammaR': [-0.0269148055981549, -0.6493863357396057],
-                         'gammaA': [0.3455651486138014, 1.5183910727597576]}
+                         'lnGammaC': [-0.07366516449835842, -0.4930109821121367],
+                         'lnGammaR': [-0.0269148055981549, -0.6493863357396057],
+                         'lnGammaA': [0.3455651486138014, 1.5183910727597576]}
         self.assertTrue(info.keys() == info_expected.keys())
         for key, values in info.items():
             values_expected = info_expected[key]
@@ -79,9 +79,9 @@ class AssociationNRTLTests(unittest.TestCase):
         gamma = WaterEGBE.compute(xs, 300.0, info)
         assert_array_almost_equal(gamma, np.array([0.33712236,  1.41257177, -0.55279752]))
         info_expected = {'xA': [0.10525594794963455, 0.8046881234758262, 0.44045425967908014],
-                         'gammaC': [-0.4216079737580175, -0.04228011500818901, -0.0025274745776799473],
-                         'gammaR': [-1.1016244223969927, 0.9380176499248769, -0.10915092053099013],
-                         'gammaA': [1.8603547551628437, 0.5168342360510096, -0.44111912659305846]}
+                         'lnGammaC': [-0.4216079737580175, -0.04228011500818901, -0.0025274745776799473],
+                         'lnGammaR': [-1.1016244223969927, 0.9380176499248769, -0.10915092053099013],
+                         'lnGammaA': [1.8603547551628437, 0.5168342360510096, -0.44111912659305846]}
         self.assertTrue(info.keys() == info_expected.keys())
         for key, values in info.items():
             values_expected = info_expected[key]
