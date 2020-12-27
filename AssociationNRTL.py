@@ -1,4 +1,5 @@
 import numpy as np
+
 from gamma_functions import flory_huggins, nrtl, association_gamma
 
 

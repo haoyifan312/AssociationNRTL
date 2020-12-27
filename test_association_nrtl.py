@@ -1,7 +1,9 @@
 import unittest
-from numpy.testing import assert_array_almost_equal
-from AssociationNRTL import AssociationNRTL
+
 import numpy as np
+from numpy.testing import assert_array_almost_equal
+
+from AssociationNRTL import AssociationNRTL
 
 
 class AssociationNRTLTests(unittest.TestCase):

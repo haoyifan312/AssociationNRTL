@@ -1,5 +1,6 @@
-import numpy as np
 from math import log10
+
+import numpy as np
 from scipy.optimize import least_squares
 
 
