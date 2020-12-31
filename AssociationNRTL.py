@@ -4,13 +4,15 @@ from gamma_functions import flory_huggins, nrtl, association_gamma
 
 
 class AssociationNRTL:
+    kappa_ref = 0.034
+    eps_ref = 1960.0
+
     def __init__(self,
                  r_i: np.array,
                  tau_ij,
                  alpha_ij: np.ndarray,
                  nu_i,
                  delta_i,
-                 delta_ref: list = None,
                  solver_verbose: int = 0,
                  solver_method: str = 'dogbox'):
         """
@@ -35,6 +37,9 @@ class AssociationNRTL:
         :param solver_method: optional, default 'dogbox', solver method to solve unbonded site fraction xA,
         refer to numpy.optimize.least_square method argument
         """
+        self.kappa_ref = 0.034
+        self.eps_ref = 1960.0
+
         self.r = r_i
         self.size = r_i.shape[0]
         self.temp_dep_tau = False
@@ -53,14 +58,21 @@ class AssociationNRTL:
         if len(nu_i) != self.size or len(delta_i) != self.size:
             raise Exception(f'nu_i size {len(nu_i)} or delta_i size {len(delta_i)} '
                             f'is inconsistent with r_i size {self.size}')
-        self.kappa_ref = 0.034
-        self.eps_ref = 1960.0
-        if delta_ref is not None:
-            self.kappa_ref, self.eps_ref = delta_ref
+
         self.delta_as, self.delta_ds = self.get_delta_arrays()
         self.delta_ad = np.zeros((len(self.delta_as), len(self.delta_ds)))
         self.solver_verbose = solver_verbose
         self.solver_method = solver_method
+
+    def update_delta_ref(self, kappa_ref: float, eps_ref: float):
+        """
+        allow user to overwrite default reference association strength parameters as in Eqn 13
+        :param kappa_ref:
+        :param eps_ref:
+        :return: None
+        """
+        self.kappa_ref = kappa_ref
+        self.eps_ref = eps_ref
 
     def get_delta_arrays(self):
         """
@@ -93,6 +105,21 @@ class AssociationNRTL:
             for j, delta_d in enumerate(self.delta_ds):
                 self.delta_ad[i][j] = delta_a*delta_d*delta_ref
 
+    def modified_flory_huggins(self, r: np.array, x: np.array):
+        """modified Flory-Huggins model with power factor as 2/3"""
+        return flory_huggins(r, x, power_factor=(2.0/3.0))
+
+    def association_term(self, temperature: float, x: np.array, info: dict = None):
+        self.update_delta_ad_matrix(temperature)   # -> self.delta_ad
+        gammaA = association_gamma(x,
+                                   self.r,
+                                   self.nu,
+                                   self.delta_ad,
+                                   info,
+                                   verbose=self.solver_verbose,
+                                   opt_method=self.solver_method)
+        return gammaA
+
     def compute(self, x: np.array, temp: float, info: dict = None):
         """
         compute activity coefficients from Association NRTL model
@@ -105,7 +132,7 @@ class AssociationNRTL:
             raise Exception(f'Size of x ({x.shape[0]}) is not consitant with system size {self.size}')
 
         # combinatorial term
-        gammaC = flory_huggins(self.r, x, 2.0/3.0)
+        gammaC = self.modified_flory_huggins(self.r, x)
 
         # residual term
         if self.temp_dep_tau:
@@ -118,14 +145,8 @@ class AssociationNRTL:
         gammaR = nrtl(x, tau_ij, self.alpha)
 
         # association term
-        self.update_delta_ad_matrix(temp)   # -> self.delta_ad
-        gammaA = association_gamma(x,
-                                   self.r,
-                                   self.nu,
-                                   self.delta_ad,
-                                   info,
-                                   verbose=self.solver_verbose,
-                                   opt_method=self.solver_method)
+        gammaA = self.association_term(temp, x, info)
+
         if info is not None:
             info['lnGammaC'] = list(gammaC)
             info['lnGammaR'] = list(gammaR)
