@@ -4,9 +4,6 @@ from gamma_functions import flory_huggins, nrtl, association_gamma
 
 
 class AssociationNRTL:
-    kappa_ref = 0.034
-    eps_ref = 1960.0
-
     def __init__(self,
                  r_i: np.array,
                  tau_ij,
@@ -105,9 +102,9 @@ class AssociationNRTL:
             for j, delta_d in enumerate(self.delta_ds):
                 self.delta_ad[i][j] = delta_a*delta_d*delta_ref
 
-    def modified_flory_huggins(self, r: np.array, x: np.array):
+    def modified_flory_huggins(self, x: np.array):
         """modified Flory-Huggins model with power factor as 2/3"""
-        return flory_huggins(r, x, power_factor=(2.0/3.0))
+        return flory_huggins(self.r, x, power_factor=(2.0/3.0))
 
     def association_term(self, temperature: float, x: np.array, info: dict = None):
         self.update_delta_ad_matrix(temperature)   # -> self.delta_ad
@@ -132,7 +129,7 @@ class AssociationNRTL:
             raise Exception(f'Size of x ({x.shape[0]}) is not consitant with system size {self.size}')
 
         # combinatorial term
-        gammaC = self.modified_flory_huggins(self.r, x)
+        gammaC = self.modified_flory_huggins(x)
 
         # residual term
         if self.temp_dep_tau:

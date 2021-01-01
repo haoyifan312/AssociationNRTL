@@ -113,7 +113,7 @@ class AssociationNRTLSAC(AssociationNRTL):
             raise Exception(f'Size of x ({x.shape[0]}) is not consitant with system size {self.size}')
 
         # combinatorial term
-        gammaC = self.modified_flory_huggins(self.r, x)
+        gammaC = self.modified_flory_huggins(x)
 
         # association term
         gammaA = self.association_term(temp, x, info)
