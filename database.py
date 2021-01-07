@@ -30,6 +30,8 @@ def get_molecular_data(name: str):
     :param name: str, molecule name as in database, case insensitive
     :return: AssociationNRTLSAC object if molecule in the databse, otherwise None
     """
+    if len(name) == 0:
+        raise Exception('molecule name is empty to be retrieved from database')
     name = name.lower()
     conn = sqlite3.connect('association_nrtlsac.db')
     c = conn.cursor()
@@ -56,7 +58,14 @@ def get_molecular_data(name: str):
         return ret
 
 
-def add_to_database(molecule: AssociationNRTLSACMolecule):
+def add_to_db(molecule: AssociationNRTLSACMolecule):
+    """
+    add to Association NRTL-SAC molecular parameter database from AssociationNRTLSACMolecule object
+    :param molecule: AssociationNRTLSACMolecule object with name and molecular parameters specified
+    :return:
+    """
+    if len(molecule.name) == 0:
+        raise Exception('molecule name is empty to be added to database')
     nu_more = molecule.nu_additional_sites
     delta_more = molecule.delta_additional_sites
     nu1 = nu2 = nu3 = del1 = del2 = del3 = None
@@ -69,7 +78,8 @@ def add_to_database(molecule: AssociationNRTLSACMolecule):
         make_up = [None] * (3 - len(molecule.nu_additional_sites))
         nu_more.extend(make_up)
         delta_more.extend(make_up)
-        nu1, nu2, nu3, del1, del2, del3 = (nu_more, delta_more)
+        nu1, nu2, nu3 = nu_more
+        del1, del2, del3 = delta_more
 
     row = (molecule.name.lower(),
            molecule.X,
@@ -97,8 +107,20 @@ def delete_molecule_from_db(name: str):
     :param name: str, molecule name as in database
     :return:
     """
+    if len(name) == 0:
+        raise Exception('molecule name is empty to be deleted from database')
     conn = sqlite3.connect('association_nrtlsac.db')
     c = conn.cursor()
     c.execute('DELETE FROM mol_par WHERE NAME=?', (name.lower(),))
     conn.commit()
+
+
+def update_molecule_in_db(molecule: AssociationNRTLSACMolecule):
+    """
+    update molecular parameter in the database if pre-exists
+    :param molecule: AssociationNRTLSACMolecule object with name and molecular parameters specified
+    :return:
+    """
+    delete_molecule_from_db(molecule.name)
+    add_to_db(molecule)
 

@@ -59,9 +59,9 @@ def association_unbonded_site_fraction_residuals(xs: np.array, rho_a, rho_d, cap
     """
     compute function value of solving unbonded site fractions
     :param xs: current unbonded site fractions
-    :param rho_a:
-    :param rho_d:
-    :param cap_delta_ad:
+    :param rho_a: volume fractions of HB acceptor sites
+    :param rho_d: volume fractions of HB donor sites
+    :param cap_delta_ad: matrix for calculated association strengths between all HB acceptor and donor sites
     :return:
     """
     size_a = rho_a.shape[0]
