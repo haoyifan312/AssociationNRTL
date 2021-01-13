@@ -124,3 +124,10 @@ def update_molecule_in_db(molecule: AssociationNRTLSACMolecule):
     delete_molecule_from_db(molecule.name)
     add_to_db(molecule)
 
+
+t_butanol = get_molecular_data('t-butanol')
+t_butanol.r = 3.45
+update_molecule_in_db(t_butanol)
+new_t_butanol = get_molecular_data('t-butanol')
+print(new_t_butanol)
+

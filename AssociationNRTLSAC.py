@@ -49,7 +49,9 @@ class AssociationNRTLSAC(AssociationNRTL):
                  solver_method: str = 'dogbox'):
         """
         Association NRTL-SAC model, reference Hao and Chen, I&ECR 2019
-        :param molecules:
+        :param molecules: list of molecular parameters wrapped in AssociationNRTLSACMolecule objects
+        there is a database storing all published Association NRTL-SAC parameters in database.py
+        check example_AssociationNRTLSAC.py of use cases
         :param solver_verbose: optional, default 0,
         verbose option to print solver info,
         refer to numpy.optimize.least_square verbose argument
